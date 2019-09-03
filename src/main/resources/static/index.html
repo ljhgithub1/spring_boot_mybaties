@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>Signin Template for Bootstrap</title>
+		<!-- Bootstrap core CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- Custom styles for this template -->
+		<link href="css/signin.css" rel="stylesheet">
+		<script type="text/javascript" src="webjars/jquery/3.4.1/jquery.min.js"></script>
+	</head>
+
+	<body class="text-center">
+
+
+		<form class="form-signin">
+			<img class="mb-4" src="img/boot.png" alt="" width="72" height="72">
+			<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+			<label class="sr-only">›</label>
+			<input type="text" class="form-control" name="username" placeholder="Username" id="username">
+			<label class="sr-only">Password</label>
+			<input type="password" class="form-control" name="password" placeholder="Password" id="password">
+			<div class="checkbox mb-3">
+				<label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+			</div>
+			<button class="btn btn-lg btn-primary btn-block" id="bottom" type="button">Sign in</button>
+			<p class="mt-5 mb-3 text-muted">© 2017-2018</p>
+			<a class="btn btn-sm">中文</a>
+			<a class="btn btn-sm">English</a>
+		</form>
+		<script>
+			var flag=true;
+			//添加离焦事件，检测用户是否存在
+			$("#username").blur(checkusername)
+			function checkusername() {
+				var username=$("#username").val();
+				$.ajax({
+					url:"/findByUserName",
+					type:"post",
+					data:{"username":username},
+					success:function (data) {
+						if(data.statusCode==100){
+							alert("用户名不存在，请重新输入");
+							flag=false;
+							return flag;
+						}
+						return flag;
+					}
+				});
+			}
+			//检验是否用户名，密码为空
+			function checkusernames() {
+				var username=$("#username").val();
+				if(username==''||username==null){
+					alert("请输入用户名");
+					return false;
+				}
+				return true;
+			}
+			function checkpassword() {
+				var password=$("#password").val();
+				if(password==''||password==null){
+					alert("请输入密码");
+					return false;
+				}
+				return true;
+			}
+
+			//用户提交，添加点击事件
+			$("#bottom").click(loginsubim)
+			function loginsubim() {
+				if(flag) {
+					if (checkusernames() && checkpassword()) {
+						var username = $("#username").val();
+						var password = $("#password").val();
+						$.ajax({
+							url: "/login",
+							type: "post",
+							data: {"username": username, "password": password},
+							success: function (data) {
+								if (data.statusCode == 100) {
+									alert("密码不正确，请重新输入");
+								} else {
+									window.location.href = "dashboard.html";
+								}
+							}
+						})
+					}
+				}
+			}
+		</script>
+
+	</body>
+
+</html>
